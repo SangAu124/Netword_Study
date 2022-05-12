@@ -13,28 +13,19 @@ import java.util.Scanner;
 public class ServerMain {
 
 	public static void main(String[] args) {
-		Scanner scan = new Scanner(System.in);
-		ServerSocket ss = null;
-		try {
-			ss = new ServerSocket(1000);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		System.out.println("서버가 시작되었습니다.");
 		
 		try {
-			Socket sc = ss.accept();
+			ServerSocket ss = new ServerSocket(1004);// 서버 시작(클라이언트 접속 대기)
 			
-			InputStream is = sc.getInputStream();
-			OutputStream os = sc.getOutputStream();
-			PrintWriter pw = new PrintWriter(os, true);
-			BufferedReader br = new BufferedReader(new InputStreamReader(is));
-			
-			Thread it = new InputThread(pw);
-			Thread ot = new OutputThread(br);
-			
-		} catch (IOException e) {
+			while(true) {
+				Socket sc = ss.accept();
+				Thread ot = new OutputThread(sc);
+				ot.start();
+			}
+		} catch(Exception e) {
+			System.out.println("연결 종료");
 			e.printStackTrace();
 		}
 	}
-	
 }
